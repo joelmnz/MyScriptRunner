@@ -23,9 +23,14 @@ namespace MyScriptRunner
                 return;
             }
 
+
+            ScriptOpener.Init();
+
             Application.Run(new MainForm());
 
         }
+
+        
 
 
         public static string ScriptFolder

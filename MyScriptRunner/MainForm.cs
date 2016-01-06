@@ -37,10 +37,10 @@ namespace MyScriptRunner
         private void ScriptPathTsl_Click(object sender, EventArgs e)
         {
             Program.OpenScriptFolder();
-            
+
         }
 
-        
+
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -50,7 +50,7 @@ namespace MyScriptRunner
         private void MainForm_Shown(object sender, EventArgs e)
         {
             // may do event handling later
-            
+
             //this.fileSystemWatcher1.Created += this.fileSystemWatcher1_Changed;
             //this.fileSystemWatcher1.Changed += this.fileSystemWatcher1_Changed;
             //this.fileSystemWatcher1.Renamed += this.fileSystemWatcher1_Changed;
@@ -77,22 +77,34 @@ namespace MyScriptRunner
 
         private void RunSelectedScript()
         {
-
-            if (string.IsNullOrEmpty(this.SelectedScriptPath)) { return; }
-            if (!System.IO.File.Exists(this.SelectedScriptPath)) { return; }
-
+            
             try
             {
-                var pi = new System.Diagnostics.ProcessStartInfo(this.SelectedScriptPath);
-                //pi.WorkingDirectory = Program.ScriptFolder
-                //System.Diagnostics.Process.Start(this.SelectedScriptPath);
-                System.Diagnostics.Process.Start(pi);
+                ScriptOpener.RunScript(this.SelectedScriptPath);
             }
             catch (Exception ex)
             {
                 ShowError(ex);
             }
 
+        }
+
+        private void editScriptToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            EditSelectedScript();
+        }
+
+        private void EditSelectedScript()
+        {
+            
+            try
+            {
+                ScriptOpener.EditScript(this.SelectedScriptPath);
+            }
+            catch (Exception ex)
+            {
+                ShowError(ex);
+            }
         }
 
         private void LoadScripts()
@@ -184,6 +196,8 @@ namespace MyScriptRunner
         private void refreshToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.LoadScripts();
+            ScriptOpener.Init();
+
         }
 
         private async void ScriptsListBox_SelectedValueChanged(object sender, EventArgs e)
@@ -229,5 +243,21 @@ namespace MyScriptRunner
             Program.OpenScriptFolder();
         }
 
+        private void ScriptsListBox_DoubleClick(object sender, EventArgs e)
+        {
+            this.RunSelectedScript();
+        }
+
+        private void openExtensionHandlesFileToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                ScriptOpener.OpenExtensionHandlerConfigFile();
+            }
+            catch (Exception ex)
+            {
+                ShowError(ex);
+            }
+        }
     } // class
 } // ns
