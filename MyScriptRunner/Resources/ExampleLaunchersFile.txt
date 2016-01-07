@@ -1,12 +1,15 @@
 # MyScriptRunning Launchers file
 # Define extensions, one line per extension
-# format = run/edit|extensions|exe
-# example = edit|txt bat|notepad.exe
+# format = run/edit|extensions|exe|Arguments format - must have a {0} for the file name to be placed!
+# example = edit|.txt .bat|notepad.exe
+# example with arguments = edit|.txt .bat|SomeApp.exe|-File {0} -s -t
 # if nothing is defined it will be run and the default app will be run
 
 # run file definitions
-run|.ps1|powershell
+#if the run app requires extra args then put them at the end
+#e.g. run|.ps1|powershell|-File
 
+run|.ps1|powershell|-ExecutionPolicy ByPass -File "{0}"
 
 # edit file definitions
 

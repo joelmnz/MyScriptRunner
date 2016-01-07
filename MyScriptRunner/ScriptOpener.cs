@@ -28,7 +28,7 @@ namespace MyScriptRunner
         {
             if (string.IsNullOrEmpty(scriptFile)) { return; }
             if (!System.IO.File.Exists(scriptFile)) { return; }
-            
+
             var option = GetConfigOption(scriptFile, actionName);
             if (option == null)
             {
@@ -42,8 +42,10 @@ namespace MyScriptRunner
             }
             else
             {
-                pi = new System.Diagnostics.ProcessStartInfo(option.RunCommand, scriptFile);
+                pi = new System.Diagnostics.ProcessStartInfo(option.RunCommand, string.Format(option.RunArgsFormat, scriptFile));
+                //pi.UseShellExecute = false;
             }
+
 
             System.Diagnostics.Process.Start(pi);
         }
@@ -118,16 +120,22 @@ namespace MyScriptRunner
 
         class ScriptOpenOption
         {
+            private const string RUNARGS_DEFAULT_FORMAT = "\"{0}\"";
 
             public ScriptOpenOption() { }
 
             public ScriptOpenOption(string[] values)
             {
-                if (values == null || values.Length != 3) { return; }
+                if (values == null || values.Length < 3) { return; }
 
                 this.ActionType = values[0].Trim();
                 this.Extensions = " " + values[1] + " "; // need spacings before and after
                 this.RunCommand = values[2];
+
+                if (values.Length > 3)
+                {
+                    this.RunArgsFormat = values[3];
+                }
 
                 this.Extensions = this.Extensions.ToLower();
 
@@ -136,6 +144,26 @@ namespace MyScriptRunner
             public string ActionType { get; set; }
             public string Extensions { get; set; }
             public string RunCommand { get; set; }
+
+            private string _RunArgsFormat = RUNARGS_DEFAULT_FORMAT;
+            public string RunArgsFormat
+            {
+                get
+                {
+                    return _RunArgsFormat;
+                }
+                set
+                {
+                    if (string.IsNullOrEmpty(value))
+                    {
+                        _RunArgsFormat = RUNARGS_DEFAULT_FORMAT;
+                    }
+                    else
+                    {
+                        _RunArgsFormat = value;
+                    }
+                }
+            }
 
             public bool IsValid()
             {
