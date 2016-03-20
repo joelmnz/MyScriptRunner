@@ -15,6 +15,7 @@ namespace MyScriptRunner
     {
         private const string FIELD_ScriptName = "ScriptName";
         private const string FIELD_FullPath = "FullPath";
+
         public MainForm()
         {
             InitializeComponent();
@@ -31,16 +32,12 @@ namespace MyScriptRunner
             this.ScriptsListBox.DisplayMember = FIELD_ScriptName;
 
             LoadScripts();
-
         }
 
         private void ScriptPathTsl_Click(object sender, EventArgs e)
         {
             Program.OpenScriptFolder();
-
         }
-
-
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -62,7 +59,6 @@ namespace MyScriptRunner
         private void fileSystemWatcher1_Changed(object sender, FileSystemEventArgs e)
         {
             // refresh list...
-
         }
 
         private void runToolStripMenuItem_Click(object sender, EventArgs e)
@@ -70,23 +66,28 @@ namespace MyScriptRunner
             RunSelectedScript();
         }
 
-        void ShowError(Exception ex)
+        private void ShowError(Exception ex)
         {
             MessageBox.Show(ex.Message, this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
         private void RunSelectedScript()
         {
-            
+            // naming convention, put (admin) into the file name
+            bool asAdmin = this.SelectedScriptPath.Contains("(admin)");
+            this.RunSelectedScript(asAdmin);
+        }
+
+        private void RunSelectedScript(bool asAdmin)
+        {
             try
             {
-                ScriptOpener.RunScript(this.SelectedScriptPath);
+                ScriptOpener.RunScript(this.SelectedScriptPath, asAdmin);
             }
             catch (Exception ex)
             {
                 ShowError(ex);
             }
-
         }
 
         private void editScriptToolStripMenuItem_Click(object sender, EventArgs e)
@@ -96,7 +97,6 @@ namespace MyScriptRunner
 
         private void EditSelectedScript()
         {
-            
             try
             {
                 ScriptOpener.EditScript(this.SelectedScriptPath);
@@ -116,6 +116,7 @@ namespace MyScriptRunner
         }
 
         private DataView _DataSource = null;
+
         private DataView DataSource
         {
             get
@@ -124,20 +125,17 @@ namespace MyScriptRunner
             }
             set
             {
-
                 _DataSource = value;
                 if (this.ScriptsListBox.InvokeRequired)
                 {
                     this.Invoke((Action)(() => this.ScriptsListBox.DataSource = value)
                    );
-
                 }
                 else {
                     this.ScriptsListBox.DataSource = value;
                 }
                 this.ApplySearchFilter();
             }
-
         }
 
         private string SearchText
@@ -162,7 +160,6 @@ namespace MyScriptRunner
                 this.DataSource.RowFilter = null; return;
             }
             this.DataSource.RowFilter = "[" + FIELD_ScriptName + "] LIKE '%" + searchText.Replace("'", "''") + "%'";
-
         }
 
         private DataTable GetScriptsTable()
@@ -197,7 +194,6 @@ namespace MyScriptRunner
         {
             this.LoadScripts();
             ScriptOpener.Init();
-
         }
 
         private async void ScriptsListBox_SelectedValueChanged(object sender, EventArgs e)
@@ -205,14 +201,17 @@ namespace MyScriptRunner
             await LoadScriptPreview(SelectedScriptPath);
         }
 
-        async Task LoadScriptPreview(string scriptPath)
+        private async Task LoadScriptPreview(string scriptPath)
         {
             this.ScriptTextBox.Text = string.Empty;
+            this.lblScriptName.Text = string.Empty;
 
             if (string.IsNullOrEmpty(scriptPath)) { return; }
 
             if (System.IO.File.Exists(scriptPath))
             {
+                lblScriptName.Text = System.IO.Path.GetFileName(scriptPath);
+
                 try
                 {
                     //this.ScriptTextBox.Text = System.IO.File.ReadAllText(scriptPath);
@@ -224,7 +223,6 @@ namespace MyScriptRunner
                 catch (Exception ex)
                 {
                     this.ScriptTextBox.Text = "ERROR:" + Environment.NewLine + ex.Message;
-
                 }
             }
         }
@@ -258,6 +256,11 @@ namespace MyScriptRunner
             {
                 ShowError(ex);
             }
+        }
+
+        private void runScriptAsAdminToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            RunSelectedScript(true);
         }
     } // class
 } // ns

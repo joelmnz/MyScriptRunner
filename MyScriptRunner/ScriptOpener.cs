@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MyScriptRunner
 {
-    class ScriptOpener
+    internal class ScriptOpener
     {
         private const string COMMENT_CHAR = "#";
         private const char ARG_SEPERATOR = '|';
@@ -14,17 +14,17 @@ namespace MyScriptRunner
         private const string EDIT_OPTION = "edit";
         private const string DEFAULT_EDITOR = "notepad";
 
-        public static void RunScript(string scriptFile)
+        public static void RunScript(string scriptFile, bool asAdmin)
         {
-            RunFileAction(scriptFile, RUN_OPTION, string.Empty);
+            RunFileAction(scriptFile, RUN_OPTION, string.Empty, asAdmin);
         }
 
         public static void EditScript(string scriptFile)
         {
-            RunFileAction(scriptFile, EDIT_OPTION, DEFAULT_EDITOR);
+            RunFileAction(scriptFile, EDIT_OPTION, DEFAULT_EDITOR, false);
         }
 
-        static void RunFileAction(string scriptFile, string actionName, string defaultRun)
+        private static void RunFileAction(string scriptFile, string actionName, string defaultRun, bool asAdmin)
         {
             if (string.IsNullOrEmpty(scriptFile)) { return; }
             if (!System.IO.File.Exists(scriptFile)) { return; }
@@ -46,31 +46,31 @@ namespace MyScriptRunner
                 //pi.UseShellExecute = false;
             }
 
+            if (asAdmin == true)
+            {
+                pi.Verb = "runas";
+            }
 
             System.Diagnostics.Process.Start(pi);
         }
 
-
-        static ScriptOpenOption GetConfigOption(string fileName, string action)
+        private static ScriptOpenOption GetConfigOption(string fileName, string action)
         {
             if (ConfigOptions == null || ConfigOptions.Count == 0) { return null; }
 
             string fileExt = System.IO.Path.GetExtension(fileName);
 
             return ConfigOptions.FirstOrDefault((item) => item.ActionType == action && item.ContainsExtension(fileExt));
-
         }
 
         internal static void Init()
         {
-
             if (!System.IO.File.Exists(ExtensionHandlersConfigFile))
             {
                 System.IO.File.WriteAllText(ExtensionHandlersConfigFile, Properties.Resources.ExampleLaunchersFile);
             }
 
             ConfigOptions = GetConfigOptions();
-
         }
 
         public static void OpenExtensionHandlerConfigFile()
@@ -80,8 +80,7 @@ namespace MyScriptRunner
 
         private static List<ScriptOpenOption> ConfigOptions { get; set; }
 
-
-        static List<ScriptOpenOption> GetConfigOptions()
+        private static List<ScriptOpenOption> GetConfigOptions()
         {
             var lsOptions = new List<ScriptOpenOption>();
 
@@ -99,13 +98,10 @@ namespace MyScriptRunner
 
                     var opt = new ScriptOpenOption(arValues);
                     if (opt.IsValid()) { lsOptions.Add(opt); }
-
                 } while (!sr.EndOfStream);
             }
 
-
             return lsOptions;
-
         }
 
         public const string EXT_CONFIG_FILE = "ExtensionHandlers.ini";
@@ -118,11 +114,13 @@ namespace MyScriptRunner
             }
         }
 
-        class ScriptOpenOption
+        private class ScriptOpenOption
         {
             private const string RUNARGS_DEFAULT_FORMAT = "\"{0}\"";
 
-            public ScriptOpenOption() { }
+            public ScriptOpenOption()
+            {
+            }
 
             public ScriptOpenOption(string[] values)
             {
@@ -138,7 +136,6 @@ namespace MyScriptRunner
                 }
 
                 this.Extensions = this.Extensions.ToLower();
-
             }
 
             public string ActionType { get; set; }
@@ -146,6 +143,7 @@ namespace MyScriptRunner
             public string RunCommand { get; set; }
 
             private string _RunArgsFormat = RUNARGS_DEFAULT_FORMAT;
+
             public string RunArgsFormat
             {
                 get
@@ -174,10 +172,6 @@ namespace MyScriptRunner
             {
                 return this.Extensions.Contains(" " + fileExt.ToLower() + " ");
             }
-
         } //ScriptOpenOption
-
     } // class
 } // ns
-
-

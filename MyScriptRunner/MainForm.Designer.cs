@@ -35,6 +35,7 @@
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openScriptFolderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.openExtensionHandlesFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.actionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.runToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -46,7 +47,8 @@
             this.ScriptsListBox = new System.Windows.Forms.ListBox();
             this.ScriptTextBox = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
-            this.openExtensionHandlesFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.runScriptAsAdminToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.lblScriptName = new System.Windows.Forms.Label();
             this.statusStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.fileSystemWatcher1)).BeginInit();
@@ -109,6 +111,13 @@
             this.openScriptFolderToolStripMenuItem.Text = "&Open Script Folder";
             this.openScriptFolderToolStripMenuItem.Click += new System.EventHandler(this.openScriptFolderToolStripMenuItem_Click);
             // 
+            // openExtensionHandlesFileToolStripMenuItem
+            // 
+            this.openExtensionHandlesFileToolStripMenuItem.Name = "openExtensionHandlesFileToolStripMenuItem";
+            this.openExtensionHandlesFileToolStripMenuItem.Size = new System.Drawing.Size(223, 22);
+            this.openExtensionHandlesFileToolStripMenuItem.Text = "Open Extension Handles File";
+            this.openExtensionHandlesFileToolStripMenuItem.Click += new System.EventHandler(this.openExtensionHandlesFileToolStripMenuItem_Click);
+            // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
@@ -120,6 +129,7 @@
             // 
             this.actionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.runToolStripMenuItem,
+            this.runScriptAsAdminToolStripMenuItem,
             this.editScriptToolStripMenuItem,
             this.refreshToolStripMenuItem});
             this.actionsToolStripMenuItem.Name = "actionsToolStripMenuItem";
@@ -130,7 +140,7 @@
             // 
             this.runToolStripMenuItem.Name = "runToolStripMenuItem";
             this.runToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F5;
-            this.runToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.runToolStripMenuItem.Size = new System.Drawing.Size(232, 22);
             this.runToolStripMenuItem.Text = "&Run Script";
             this.runToolStripMenuItem.Click += new System.EventHandler(this.runToolStripMenuItem_Click);
             // 
@@ -138,7 +148,7 @@
             // 
             this.editScriptToolStripMenuItem.Name = "editScriptToolStripMenuItem";
             this.editScriptToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F4;
-            this.editScriptToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.editScriptToolStripMenuItem.Size = new System.Drawing.Size(232, 22);
             this.editScriptToolStripMenuItem.Text = "&Edit Script";
             this.editScriptToolStripMenuItem.Click += new System.EventHandler(this.editScriptToolStripMenuItem_Click);
             // 
@@ -146,7 +156,7 @@
             // 
             this.refreshToolStripMenuItem.Name = "refreshToolStripMenuItem";
             this.refreshToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F3;
-            this.refreshToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.refreshToolStripMenuItem.Size = new System.Drawing.Size(232, 22);
             this.refreshToolStripMenuItem.Text = "Refresh";
             this.refreshToolStripMenuItem.Click += new System.EventHandler(this.refreshToolStripMenuItem_Click);
             // 
@@ -190,11 +200,11 @@
             this.ScriptTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.ScriptTextBox.Location = new System.Drawing.Point(410, 70);
+            this.ScriptTextBox.Location = new System.Drawing.Point(410, 91);
             this.ScriptTextBox.Multiline = true;
             this.ScriptTextBox.Name = "ScriptTextBox";
             this.ScriptTextBox.ReadOnly = true;
-            this.ScriptTextBox.Size = new System.Drawing.Size(551, 452);
+            this.ScriptTextBox.Size = new System.Drawing.Size(551, 431);
             this.ScriptTextBox.TabIndex = 5;
             // 
             // label2
@@ -206,18 +216,30 @@
             this.label2.TabIndex = 4;
             this.label2.Text = "Preview (F4 = Edit, F5 = Run)";
             // 
-            // openExtensionHandlesFileToolStripMenuItem
+            // runScriptAsAdminToolStripMenuItem
             // 
-            this.openExtensionHandlesFileToolStripMenuItem.Name = "openExtensionHandlesFileToolStripMenuItem";
-            this.openExtensionHandlesFileToolStripMenuItem.Size = new System.Drawing.Size(223, 22);
-            this.openExtensionHandlesFileToolStripMenuItem.Text = "Open Extension Handles File";
-            this.openExtensionHandlesFileToolStripMenuItem.Click += new System.EventHandler(this.openExtensionHandlesFileToolStripMenuItem_Click);
+            this.runScriptAsAdminToolStripMenuItem.Name = "runScriptAsAdminToolStripMenuItem";
+            this.runScriptAsAdminToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Shift | System.Windows.Forms.Keys.F5)));
+            this.runScriptAsAdminToolStripMenuItem.Size = new System.Drawing.Size(232, 22);
+            this.runScriptAsAdminToolStripMenuItem.Text = "Run Script as Admin";
+            this.runScriptAsAdminToolStripMenuItem.Click += new System.EventHandler(this.runScriptAsAdminToolStripMenuItem_Click);
+            // 
+            // lblScriptName
+            // 
+            this.lblScriptName.AutoSize = true;
+            this.lblScriptName.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblScriptName.Location = new System.Drawing.Point(407, 70);
+            this.lblScriptName.Name = "lblScriptName";
+            this.lblScriptName.Size = new System.Drawing.Size(23, 18);
+            this.lblScriptName.TabIndex = 7;
+            this.lblScriptName.Text = "...";
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(979, 561);
+            this.Controls.Add(this.lblScriptName);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.ScriptTextBox);
             this.Controls.Add(this.ScriptsListBox);
@@ -261,6 +283,8 @@
         private System.Windows.Forms.ToolStripMenuItem refreshToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem openScriptFolderToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem openExtensionHandlesFileToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem runScriptAsAdminToolStripMenuItem;
+        private System.Windows.Forms.Label lblScriptName;
     }
 }
 
